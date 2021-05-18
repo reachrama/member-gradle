@@ -1,0 +1,67 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.5'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+
+ext {
+	queryDslVersion = '4.4.0'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+sourceSets {
+	generated {
+		java {
+			srcDirs = ['src/main/generated']
+		}
+	}
+}
+I
+
+
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.projectlombok:lombok'
+	runtimeOnly 'mysql:mysql-connector-java'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	annotationProcessor("com.querydsl:querydsl-apt:${queryDslVersion}:general")
+	implementation("com.querydsl:querydsl-jpa:${queryDslVersion}")
+	implementation("com.querydsl:querydsl-apt:${queryDslVersion}")
+}
+
+/*task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Generates the QueryDSL query types') {
+
+	source = sourceSets.main.java
+	classpath = configurations.compile // + configurations.provided
+	options.compilerArgs = [
+			"-proc:only",
+			"-processor", "com.query.apt.jpa.JPAAnnotationProcessor"
+	]
+	destinationDir = sourceSets.generated.java.srcDirs.iterator().next()
+}*/
+
+clean {
+	delete sourceSets.generated.java.srcDirs
+}
+
+test {
+	useJUnitPlatform()
+}
